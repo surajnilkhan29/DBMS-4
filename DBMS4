@@ -1,0 +1,195 @@
+Microsoft Windows [Version 10.0.19045.6093]
+(c) Microsoft Corporation. All rights reserved.
+
+C:\Program Files\MySQL\MySQL Server 9.2>mysql -h localhost -u root -p
+Enter password: ****
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 10
+Server version: 9.2.0 MySQL Community Server - GPL
+
+Copyright (c) 2000, 2025, Oracle and/or its affiliates.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| bank               |
+| bank1              |
+| college            |
+| college1           |
+| company            |
+| ecommerce          |
+| ecommers           |
+| information_schema |
+| inventory          |
+| mysql              |
+| performance_schema |
+| student            |
++--------------------+
+12 rows in set (0.350 sec)
+
+mysql> use inventory;
+Database changed
+mysql> create table student(rollno int primary key,name varchar(20),class varchar(10);
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '' at line 1
+mysql> create table student(rollno int primary key,name varchar(20),class varchar(10));
+Query OK, 0 rows affected (0.321 sec)
+
+mysql> create table fees(tid int primary key,rollno int,feesamt float,pdate date);
+Query OK, 0 rows affected (0.218 sec)
+
+mysql> insert into student values(101,'Mayur','TE');
+Query OK, 1 row affected (0.178 sec)
+
+mysql> insert into student values(102,'Pranav','SE');
+Query OK, 1 row affected (0.088 sec)
+
+mysql> insert into student values(103,'Yash','SE');
+Query OK, 1 row affected (0.085 sec)
+
+mysql> insert into student values(104,'Suraj','SE');
+Query OK, 1 row affected (0.090 sec)
+
+mysql> insert into fees values(1000,101,50000,'13-04-25');
+Query OK, 1 row affected (0.092 sec)
+
+mysql> insert into fees values(1001,102,45000,'17-04-25');
+Query OK, 1 row affected (0.090 sec)
+
+mysql> desc fees;
++---------+-------+------+-----+---------+-------+
+| Field   | Type  | Null | Key | Default | Extra |
++---------+-------+------+-----+---------+-------+
+| tid     | int   | NO   | PRI | NULL    |       |
+| rollno  | int   | YES  |     | NULL    |       |
+| feesamt | float | YES  |     | NULL    |       |
+| pdate   | date  | YES  |     | NULL    |       |
++---------+-------+------+-----+---------+-------+
+4 rows in set (0.194 sec)
+
+mysql> insert into fees(tid,feesamt,pdate) values (1002,50000,'20-04-25');
+Query OK, 1 row affected (0.093 sec)
+
+mysql> insert into fees(tid,feesamt,pdate) values (1003,50000,'22-04-25');
+Query OK, 1 row affected (0.089 sec)
+
+mysql> select *from student;
++--------+--------+-------+
+| rollno | name   | class |
++--------+--------+-------+
+|    101 | Mayur  | TE    |
+|    102 | Pranav | SE    |
+|    103 | Yash   | SE    |
+|    104 | Suraj  | SE    |
++--------+--------+-------+
+4 rows in set (0.004 sec)
+
+mysql> select *from fees;
++------+--------+---------+------------+
+| tid  | rollno | feesamt | pdate      |
++------+--------+---------+------------+
+| 1000 |    101 |   50000 | 2013-04-25 |
+| 1001 |    102 |   45000 | 2017-04-25 |
+| 1002 |   NULL |   50000 | 2020-04-25 |
+| 1003 |   NULL |   50000 | 2022-04-25 |
++------+--------+---------+------------+
+4 rows in set (0.005 sec)
+
+mysql> select name,class,feesamt,pdate from student inner join fees on student.rollno=fees.rollno;
++--------+-------+---------+------------+
+| name   | class | feesamt | pdate      |
++--------+-------+---------+------------+
+| Mayur  | TE    |   50000 | 2013-04-25 |
+| Pranav | SE    |   45000 | 2017-04-25 |
++--------+-------+---------+------------+
+2 rows in set (0.007 sec)
+
+mysql> select name,class,feesamt,pdate from student natural join fees;
++--------+-------+---------+------------+
+| name   | class | feesamt | pdate      |
++--------+-------+---------+------------+
+| Mayur  | TE    |   50000 | 2013-04-25 |
+| Pranav | SE    |   45000 | 2017-04-25 |
++--------+-------+---------+------------+
+2 rows in set (0.011 sec)
+
+mysql> select name,class,feesamt,pdate from student left join fees on student.rollno=fees.rollno;
++--------+-------+---------+------------+
+| name   | class | feesamt | pdate      |
++--------+-------+---------+------------+
+| Mayur  | TE    |   50000 | 2013-04-25 |
+| Pranav | SE    |   45000 | 2017-04-25 |
+| Yash   | SE    |    NULL | NULL       |
+| Suraj  | SE    |    NULL | NULL       |
++--------+-------+---------+------------+
+4 rows in set (0.010 sec)
+
+mysql> select name,class,feesamt,pdate from student right join fees ;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '' at line 1
+mysql> select name,class,feesamt,pdate from student right join fees on student.rollno=fees.rollno;
++--------+-------+---------+------------+
+| name   | class | feesamt | pdate      |
++--------+-------+---------+------------+
+| Mayur  | TE    |   50000 | 2013-04-25 |
+| Pranav | SE    |   45000 | 2017-04-25 |
+| NULL   | NULL  |   50000 | 2020-04-25 |
+| NULL   | NULL  |   50000 | 2022-04-25 |
++--------+-------+---------+------------+
+4 rows in set (0.004 sec)
+
+mysql> select rollno from fees table where feesamt>45000;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'table where feesamt>45000' at line 1
+mysql> select rollno from fees table where (feesamt>45000);
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'table where (feesamt>45000)' at line 1
+mysql> SELECT rollno FROM fees WHERE feesamt > 45000;
++--------+
+| rollno |
++--------+
+|    101 |
+|   NULL |
+|   NULL |
++--------+
+3 rows in set (0.090 sec)
+
+mysql> SELECT student.name
+    -> FROM student
+    -> INNER JOIN fees ON student.rollno = fees.rollno
+    -> WHERE fees.feesamt > 45000;
++-------+
+| name  |
++-------+
+| Mayur |
++-------+
+1 row in set (0.013 sec)
+
+mysql> select student.rollno,student.name,student.class from student LEFT JOIN fees ON student.rollno = fees.rollno WHERE fees.rollno IS NULL;
++--------+-------+-------+
+| rollno | name  | class |
++--------+-------+-------+
+|    103 | Yash  | SE    |
+|    104 | Suraj | SE    |
++--------+-------+-------+
+2 rows in set (0.018 sec)
+
+mysql>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
